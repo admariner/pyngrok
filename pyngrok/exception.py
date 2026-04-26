@@ -73,7 +73,7 @@ class PyngrokNgrokHTTPError(PyngrokNgrokError):
     def __str__(self) -> str:
         base = super().__str__()
         if self.status_code == 404 and "/api/endpoints" in self.url:
-            return f"{base} (call NgrokClient.update() to get the latest ngrok binary for Endpoints support)"
+            return f"{base} (your ngrok binary may be too old to support /api/endpoints; call ngrok.update())"
         return base
 
 

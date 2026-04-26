@@ -1020,22 +1020,22 @@ class TestNgrok(NgrokTestCase):
         config = {
             "endpoints": [{"name": "other-endpoint", "upstream": {"url": "http://localhost:9000"}}],
             "tunnels": {
-                "legacy-tunnel": {"proto": "http", "addr": "7000"}
+                "v2-tunnel": {"proto": "http", "addr": "7000"}
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3.yml")
         installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path, config_version="3")
-        mock_api_request.return_value = {"name": "legacy-tunnel-api", "url": "https://my.ngrok.dev"}
+        mock_api_request.return_value = {"name": "v2-tunnel-api", "url": "https://my.ngrok.dev"}
 
         # WHEN
-        ngrok.connect(name="legacy-tunnel", pyngrok_config=pyngrok_config)
+        ngrok.connect(name="v2-tunnel", pyngrok_config=pyngrok_config)
 
         # THEN
         call_args, call_kwargs = mock_api_request.call_args
         self.assertEqual(call_args[0], f"{mock_get_ngrok_process().api_url}/api/endpoints")
-        self.assertEqual(call_kwargs["data"]["name"], "legacy-tunnel-api")
+        self.assertEqual(call_kwargs["data"]["name"], "v2-tunnel-api")
         self.assertEqual(call_kwargs["data"]["upstream"], {"url": "http://localhost:7000"})
 
     @mock.patch('pyngrok.ngrok.api_request')

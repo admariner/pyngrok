@@ -56,7 +56,7 @@ class NgrokTunnel:
             self.uri = None
         #: The public ``ngrok`` URL.
         self.public_url: Optional[str] = data.get("public_url", data.get("url"))
-        #: The legacy v2 tunnel ``config`` block (e.g. ``{"addr": ..., "inspect": ...}``).
+        #: The ``config`` block specific to v2 tunnels (e.g. ``{"addr": ..., "inspect": ...}``); empty for v3 endpoints.
         self.config: Dict[str, Any] = data.get("config", {})
         #: The upstream definition (e.g. ``{"url": "http://localhost:8000", "protocol": "http1"}``).
         upstream = data.get("upstream")
