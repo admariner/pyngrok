@@ -332,7 +332,7 @@ def connect(addr: Optional[str] = None,
     a "pyngrok-default" definition exists in ``ngrok``'s config, it will be loaded and used. Any ``kwargs``
     passed as ``options`` will override properties from the loaded definition.
 
-    In v3 mode, v2-shaped arguments (``addr`` / ``proto``) are translated into the equivalent ``upstream``
+    In v3 mode, v2 arguments (``addr`` / ``proto``) are translated into the equivalent ``upstream``
     block. Passing v3-only arguments such as ``upstream`` or ``bindings`` while ``config_version`` is ``"2"``
     raises :class:`~pyngrok.exception.PyngrokError`.
 

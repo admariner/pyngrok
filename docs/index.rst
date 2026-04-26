@@ -171,7 +171,7 @@ you can start it by its ``name`` (note that "-api" will be appended to its name 
 :attr:`~pyngrok.conf.PyngrokConfig.config_version` to ``"3"`` to use the
 `v3 config <https://ngrok.com/docs/agent/config/v3/>`_ (its ``endpoints:`` block is read alongside the
 ``tunnels:`` block, and :func:`~pyngrok.ngrok.connect` posts to ``/api/endpoints`` instead of ``/api/tunnels``).
-v2-shaped ``addr`` / ``proto`` arguments are translated into the equivalent ``upstream`` block automatically.
+v2 ``addr`` / ``proto`` arguments are translated into the equivalent ``upstream`` block automatically.
 
 .. code-block:: yaml
 

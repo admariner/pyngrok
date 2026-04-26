@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Support for `ngrok`'s v3 agent config schema. Set `PyngrokConfig.config_version="3"` to route `ngrok.connect()`, `ngrok.disconnect()`, and `ngrok.get_tunnels()` against `/api/endpoints` and to read `endpoints:` definitions (a list-of-objects keyed by `name`) from the config file.
 - New `NgrokTunnel.upstream` attribute, populated from the v3 endpoint response (or synthesized from the v2 `config.addr` for backward compatibility). Other v3 endpoint response fields (e.g. `traffic_policy`, `bindings`) remain accessible via the raw `NgrokTunnel.data` dict.
-- v2-shaped `addr` / `proto` arguments are translated to a v3 `upstream` block when `config_version="3"`.
+- v2 `addr` / `proto` arguments are translated to a v3 `upstream` block when `config_version="3"`.
 
 ### Changed
 
