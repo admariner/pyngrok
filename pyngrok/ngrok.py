@@ -63,16 +63,6 @@ class NgrokTunnel:
         if not upstream and self.config.get("addr"):
             upstream = {"url": self.config["addr"]}
         self.upstream: Dict[str, Any] = upstream or {}
-        #: Whether tunnel pooling is enabled.
-        self.pooling_enabled: bool = bool(data.get("pooling_enabled", False))
-        #: The traffic policy attached to the tunnel, if any.
-        self.traffic_policy: Optional[Any] = data.get("traffic_policy")
-        #: The bindings for this tunnel.
-        self.bindings: List[str] = data.get("bindings", []) or []
-        #: A user-defined description of this tunnel.
-        self.description: Optional[str] = data.get("description")
-        #: User-defined metadata of this tunnel.
-        self.metadata: Optional[str] = data.get("metadata")
         #: Metrics for `the tunnel <https://ngrok.com/docs/agent/api/#list-tunnels>`_.
         self.metrics: Dict[str, Any] = data.get("metrics", {})
 
