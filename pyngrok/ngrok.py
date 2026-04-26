@@ -221,6 +221,10 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
                                    addr: Optional[str] = None,
                                    proto: Optional[Union[str, int]] = None,
                                    name: Optional[str] = None) -> None:
+    addr_provided = addr is not None
+    proto_provided = proto is not None
+    user_upstream_provided = "upstream" in options
+
     config_path = conf.get_config_path(pyngrok_config)
 
     with installer.config_file_lock:
@@ -279,7 +283,8 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
     options["name"] = name
 
     if pyngrok_config.config_version == "3":
-        if "upstream" not in options:
+        override_from_addr = (addr_provided or proto_provided) and not user_upstream_provided
+        if override_from_addr or "upstream" not in options:
             url = addr if "://" in addr else (
                 f"tcp://localhost:{addr}" if proto == "tcp" else f"http://localhost:{addr}"
             )
