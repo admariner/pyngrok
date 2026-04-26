@@ -11,8 +11,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Added
 
 - Support for `ngrok`'s v3 agent config schema. Set `PyngrokConfig.config_version="3"` to route `ngrok.connect()`, `ngrok.disconnect()`, and `ngrok.get_tunnels()` against `/api/endpoints` and to read `endpoints:` definitions (a list-of-objects keyed by `name`) from the config file.
-- New `NgrokTunnel` attributes mirroring v3 endpoint fields: `upstream`, `pooling_enabled`, `traffic_policy`, `bindings`, `description`, `metadata`, and a `url` alias for `public_url`.
+- New `NgrokTunnel` attributes mirroring v3 endpoint fields: `upstream`, `pooling_enabled`, `traffic_policy`, `bindings`, `description`, and `metadata`.
 - v2-shaped `addr` / `proto` arguments are translated to a v3 `upstream` block when `config_version="3"`.
+
+### Changed
+
+- Renamed the `ngrok_version` parameter default from `"v3"` to `"3"`. A leading `"v"` is stripped where this value is consumed, so `"v3"` continues to be accepted.
 
 ## [8.0.0](https://github.com/alexdlaird/pyngrok/compare/7.5.1...8.0.0) - 2026-03-31
 

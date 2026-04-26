@@ -486,7 +486,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path)
 
@@ -526,7 +526,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path)
 
@@ -597,7 +597,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         subdomain = generate_name_for_subdomain("pyngrok-temp")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path)
@@ -628,7 +628,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         subdomain = generate_name_for_subdomain("pyngrok-temp")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path)
@@ -686,7 +686,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path,
                                                 api_key="api-key")
@@ -724,7 +724,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path,
                                                 api_key="api-key")
@@ -768,7 +768,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3")
+        installer.install_default_config(config_path, config, ngrok_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path,
                                                 api_key="api-key")
@@ -891,7 +891,7 @@ class TestNgrok(NgrokTestCase):
         }
         config_path = os.path.join(self.config_dir, "config_v3_2.yml")
 
-        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path,
                                                 api_key="api-key", )
@@ -977,7 +977,7 @@ class TestNgrok(NgrokTestCase):
             ]
         }
         config_path = os.path.join(self.config_dir, "config_v3.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path, config_version="3")
         mock_api_request.return_value = {"name": "my-endpoint-api", "url": "https://my.ngrok.dev"}
@@ -1000,7 +1000,7 @@ class TestNgrok(NgrokTestCase):
             ]
         }
         config_path = os.path.join(self.config_dir, "config_v3.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path, config_version="3")
         mock_api_request.return_value = {"name": "pyngrok-default-api", "url": "https://my.ngrok.dev"}
@@ -1016,7 +1016,7 @@ class TestNgrok(NgrokTestCase):
     @mock.patch('pyngrok.ngrok.api_request')
     @mock.patch('pyngrok.ngrok.get_ngrok_process')
     def test_config_v3_matches_tunnels_block(self, mock_get_ngrok_process, mock_api_request):
-        # GIVEN — v3 config with a `tunnels:` block alongside `endpoints:`; ngrok itself supports both there
+        # GIVEN
         config = {
             "endpoints": [{"name": "other-endpoint", "upstream": {"url": "http://localhost:9000"}}],
             "tunnels": {
@@ -1024,7 +1024,7 @@ class TestNgrok(NgrokTestCase):
             }
         }
         config_path = os.path.join(self.config_dir, "config_v3.yml")
-        installer.install_default_config(config_path, config, ngrok_version="v3", config_version="3")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
         pyngrok_config = self.copy_with_updates(self.pyngrok_config,
                                                 config_path=config_path, config_version="3")
         mock_api_request.return_value = {"name": "legacy-tunnel-api", "url": "https://my.ngrok.dev"}
@@ -1060,7 +1060,6 @@ class TestNgrok(NgrokTestCase):
         self.assertEqual(len(tunnels), 1)
         self.assertEqual(tunnels[0].name, "ep1")
         self.assertEqual(tunnels[0].public_url, "https://a.ngrok.dev")
-        self.assertEqual(tunnels[0].url, "https://a.ngrok.dev")
         self.assertEqual(tunnels[0].upstream.get("url"), "http://localhost:8000")
 
     def test_ngrok_tunnel_v3_repr_uses_upstream(self):

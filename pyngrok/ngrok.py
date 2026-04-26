@@ -56,8 +56,6 @@ class NgrokTunnel:
             self.uri = None
         #: The public ``ngrok`` URL.
         self.public_url: Optional[str] = data.get("public_url", data.get("url"))
-        #: Alias of :attr:`public_url`. ``ngrok``'s v3 config calls it ``url``; both attributes are populated.
-        self.url: Optional[str] = self.public_url
         #: The legacy v2 tunnel ``config`` block (e.g. ``{"addr": ..., "inspect": ...}``).
         self.config: Dict[str, Any] = data.get("config", {})
         #: The upstream definition (e.g. ``{"url": "http://localhost:8000", "protocol": "http1"}``).
@@ -305,7 +303,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
 
 def _upgrade_legacy_params(pyngrok_config: PyngrokConfig,
                            options: Dict[str, Any]) -> None:
-    if pyngrok_config.ngrok_version == "v3":
+    if pyngrok_config.ngrok_version == "3":
         if "bind_tls" in options:
             if options.get("bind_tls") is True or options.get("bind_tls") == "true":
                 options["schemes"] = ["https"]
