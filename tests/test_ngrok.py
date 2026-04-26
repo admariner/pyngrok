@@ -780,6 +780,139 @@ class TestNgrok(NgrokTestCase):
         with self.assertRaises(PyngrokNgrokHTTPError):
             ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
 
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_connect(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        self.assertEqual(len(process._current_processes.keys()), 0)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect("5000", pyngrok_config=pyngrok_config)
+        current_process = ngrok.get_ngrok_process(pyngrok_config)
+
+        # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+        self.assertIsNotNone(current_process)
+        self.assertIsNone(current_process.proc.poll())
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertIn("https://", ngrok_tunnel.public_url)
+        self.assertEqual(ngrok_tunnel.upstream.get("url"), "http://localhost:5000")
+        self.assertEqual(len(process._current_processes.keys()), 1)
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_connect_name(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(name="my-tunnel", pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "my-tunnel")
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertEqual(ngrok_tunnel.upstream.get("url"), "http://localhost:80")
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_get_tunnels(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        url = ngrok.connect(pyngrok_config=pyngrok_config).public_url
+        time.sleep(1)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+
+        # WHEN
+        tunnels = ngrok.get_tunnels(pyngrok_config)
+
+        # THEN
+        self.assertEqual(len(tunnels), 1)
+        self.assertEqual(tunnels[0].public_url, url)
+        self.assertEqual(tunnels[0].upstream.get("url"), "http://localhost:80")
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_disconnect(self):
+        # GIVEN
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config, config_version="3")
+        url = ngrok.connect(pyngrok_config=pyngrok_config).public_url
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels(pyngrok_config)
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 1)
+        self.assertEqual(len(tunnels), 1)
+
+        # WHEN
+        ngrok.disconnect(url, pyngrok_config)
+        time.sleep(1)
+        tunnels = ngrok.get_tunnels(pyngrok_config)
+
+        # THEN
+        self.assertEqual(len(ngrok._current_tunnels.keys()), 0)
+        self.assertEqual(len(tunnels), 0)
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_endpoint_definitions(self):
+        # GIVEN
+        config = {
+            "endpoints": [
+                {"name": "v3-endpoint", "upstream": {"url": "http://localhost:8000"}}
+            ]
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path,
+                                                config_version="3")
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(name="v3-endpoint", pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "v3-endpoint-api")
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertEqual(ngrok_tunnel.upstream.get("url"), "http://localhost:8000")
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_pyngrok_default_endpoint(self):
+        # GIVEN
+        config = {
+            "endpoints": [
+                {"name": "pyngrok-default", "upstream": {"url": "http://localhost:8080"}}
+            ]
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path,
+                                                config_version="3")
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect(pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "pyngrok-default-api")
+        self.assertIsNotNone(ngrok_tunnel.public_url)
+        self.assertEqual(ngrok_tunnel.upstream.get("url"), "http://localhost:8080")
+
+    @unittest.skipIf(not os.environ.get("NGROK_AUTHTOKEN"), "NGROK_AUTHTOKEN environment variable not set")
+    def test_v3_endpoint_definitions_with_overrides(self):
+        # GIVEN
+        config = {
+            "endpoints": [
+                {"name": "pyngrok-default", "upstream": {"url": "http://localhost:8080"}}
+            ]
+        }
+        config_path = os.path.join(self.config_dir, "config_v3.yml")
+        installer.install_default_config(config_path, config, ngrok_version="3", config_version="3")
+        pyngrok_config = self.copy_with_updates(self.pyngrok_config,
+                                                config_path=config_path,
+                                                config_version="3")
+
+        # WHEN
+        ngrok_tunnel = ngrok.connect("5000", pyngrok_config=pyngrok_config)
+
+        # THEN
+        self.assertEqual(ngrok_tunnel.name, "pyngrok-default-api")
+        self.assertEqual(ngrok_tunnel.upstream.get("url"), "http://localhost:5000")
+
     ################################################################################
     # Tests below this point don't need to start a long-lived ngrok process, they
     # are asserting on pyngrok-specific code or edge cases.
