@@ -133,7 +133,7 @@ class NgrokProcess:
     def _probe_api_path(self, path: str) -> bool:
         try:
             response = urlopen(Request(f"{self.api_url}{path}"))
-            return response.getcode() == HTTPStatus.OK
+            return bool(response.getcode() == HTTPStatus.OK)
         except (HTTPError, URLError, OSError):
             return False
 

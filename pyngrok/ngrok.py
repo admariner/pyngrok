@@ -56,7 +56,8 @@ class NgrokTunnel:
             self.uri = None
         #: The public ``ngrok`` URL.
         self.public_url: Optional[str] = data.get("public_url", data.get("url"))
-        #: The ``config`` block specific to v2 tunnels (e.g. ``{"addr": ..., "inspect": ...}``); empty for v3 endpoints.
+        #: The ``config`` block specific to v2 tunnels (e.g. ``{"addr": ..., "inspect": ...}``);
+        #: empty for v3 endpoints.
         self.config: Dict[str, Any] = data.get("config", {})
         #: The upstream definition (e.g. ``{"url": "http://localhost:8000", "protocol": "http1"}``).
         upstream = data.get("upstream")
@@ -268,6 +269,7 @@ def _interpolate_tunnel_definition(pyngrok_config: PyngrokConfig,
         merged.update(options)
         options.clear()
         options.update(merged)
+        assert name is not None
         name += "-api"
 
     addr = str(addr) if addr else "80"
@@ -460,6 +462,7 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
 
     api_url = get_ngrok_process(pyngrok_config).api_url
 
+    list_keys: Tuple[str, ...]
     if pyngrok_config.config_version == "3":
         api_path = "/api/endpoints"
         list_keys = ("endpoints", "tunnels")
@@ -469,7 +472,7 @@ def get_tunnels(pyngrok_config: Optional[PyngrokConfig] = None) -> List[NgrokTun
 
     response = api_request(f"{api_url}{api_path}", method="GET",
                            timeout=pyngrok_config.request_timeout)
-    items = next((response[k] for k in list_keys if response.get(k) is not None), [])
+    items: List[Dict[str, Any]] = next((response[k] for k in list_keys if response.get(k) is not None), [])
 
     _current_tunnels.clear()
     for tunnel in items:
@@ -642,7 +645,7 @@ def api_request(url: str,
     except HTTPError as e:
         response_data = e.read().decode("utf-8")
 
-        status_code = e.getcode()
+        status_code = e.code
         logger.debug(f"Response {status_code}: {response_data.strip()}")
 
         raise PyngrokNgrokHTTPError(f"ngrok client exception, API returned {status_code}: {response_data}",
