@@ -83,6 +83,15 @@ The :func:`~pyngrok.ngrok.connect` method takes ``kwargs`` as well, which allows
 additional tunnel configurations that are supported by ``ngrok`` (or the ``name`` of a tunnel defined in ``ngrok``'s
 config file), `as documented here <#tunnel-configurations>`__.
 
+Tunnels and Endpoints
+---------------------
+
+``pyngrok`` unifies ``ngrok``'s "tunnel" (v2) and "endpoint" (v3) concepts behind a single API:
+:func:`~pyngrok.ngrok.connect` returns an :class:`~pyngrok.ngrok.NgrokTunnel` and handles the differences for
+you through the :attr:`~pyngrok.conf.PyngrokConfig.config_version` you set, routing to ``/api/tunnels`` for v2
+or ``/api/endpoints`` for v3. Existing v2 code keeps working unchanged, and every v2 tunnel and v3 endpoint
+feature remains available. For v3-specific usage, see `Using v3 Endpoints <#using-v3-endpoints>`__.
+
 Get Active Tunnels
 ------------------
 
@@ -167,6 +176,11 @@ you can start it by its ``name`` (note that "-api" will be appended to its name 
     # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:??">
     ngrok_tunnel = ngrok.connect(name="my-config-file-tunnel")
 
+.. _using-v3-endpoints:
+
+Using v3 Endpoints
+~~~~~~~~~~~~~~~~~~
+
 ``pyngrok`` defaults to ``ngrok``'s `v2 config <https://ngrok.com/docs/agent/config/v2/>`_. Set
 :attr:`~pyngrok.conf.PyngrokConfig.config_version` to ``"3"`` to use the
 `v3 config <https://ngrok.com/docs/agent/config/v3/>`_ (its ``endpoints:`` block is read alongside the
@@ -186,6 +200,20 @@ v2 ``addr`` / ``proto`` arguments are translated into the equivalent ``upstream`
       - name: pyngrok-default
         upstream:
           url: http://localhost:80
+
+You can also open a v3 endpoint without defining it in a config file:
+
+.. code-block:: python
+
+    from pyngrok import conf, ngrok
+
+    pyngrok_config = conf.PyngrokConfig(config_version="3")
+
+    # Open a v3 endpoint
+    # <NgrokTunnel: "https://<public_sub>.ngrok.io" -> "http://localhost:8000">
+    endpoint = ngrok.connect(upstream={"url": "http://localhost:8000"},
+                             bindings=["public"],
+                             pyngrok_config=pyngrok_config)
 
 
 ``ngrok``'s API
@@ -208,6 +236,13 @@ policy:
               "--bindings", "public",
               "--url", f"https://{domain}",
               "--traffic-policy-file", "policy.yml")
+
+.. note::
+
+    ``api("endpoints", ...)`` here invokes ``ngrok``'s agent CLI to manage
+    `Cloud Endpoints <https://ngrok.com/docs/universal-gateway/cloud-endpoints/>`_, which are dashboard-managed and
+    persist independently of any local agent. This is distinct from the local agent's ``/api/endpoints`` HTTP route
+    used by :func:`~pyngrok.ngrok.connect` when ``config_version="3"`` (see `Using v3 Endpoints <#using-v3-endpoints>`__).
 
 The ``ngrok`` Process
 =====================
