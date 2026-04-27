@@ -88,9 +88,9 @@ Tunnels and Endpoints
 
 ``pyngrok`` unifies ``ngrok``'s "tunnel" (v2) and "endpoint" (v3) concepts behind a single API:
 :func:`~pyngrok.ngrok.connect` returns an :class:`~pyngrok.ngrok.NgrokTunnel` and handles the differences for
-you through the :attr:`~pyngrok.conf.PyngrokConfig.config_version` you set, routing to ``/api/tunnels`` for v2
-or ``/api/endpoints`` for v3. Existing v2 code keeps working unchanged, and every v2 tunnel and v3 endpoint
-feature remains available. For v3-specific usage, see `Using v3 Endpoints <#using-v3-endpoints>`__.
+you through the :attr:`~pyngrok.conf.PyngrokConfig.config_version` you set. All ``ngrok``
+features are available to you through this. For v3-specific Endpoints,
+see `Using v3 Endpoints <#using-v3-endpoints>`__.
 
 Get Active Tunnels
 ------------------
@@ -183,9 +183,9 @@ Using v3 Endpoints
 
 ``pyngrok`` defaults to ``ngrok``'s `v2 config <https://ngrok.com/docs/agent/config/v2/>`_. Set
 :attr:`~pyngrok.conf.PyngrokConfig.config_version` to ``"3"`` to use the
-`v3 config <https://ngrok.com/docs/agent/config/v3/>`_ (its ``endpoints:`` block is read alongside the
-``tunnels:`` block, and :func:`~pyngrok.ngrok.connect` posts to ``/api/endpoints`` instead of ``/api/tunnels``).
-v2 ``addr`` / ``proto`` arguments are translated into the equivalent ``upstream`` block automatically.
+`v3 config <https://ngrok.com/docs/agent/config/v3/>`_ (its ``endpoints`` block is read alongside the
+``tunnels`` block). v2 ``addr`` / ``proto`` arguments are translated into the equivalent ``upstream`` block
+automatically.
 
 .. code-block:: yaml
 
@@ -241,8 +241,8 @@ policy:
 
     ``api("endpoints", ...)`` here invokes ``ngrok``'s agent CLI to manage
     `Cloud Endpoints <https://ngrok.com/docs/universal-gateway/cloud-endpoints/>`_, which are dashboard-managed and
-    persist independently of any local agent. This is distinct from the local agent's ``/api/endpoints`` HTTP route
-    used by :func:`~pyngrok.ngrok.connect` when ``config_version="3"`` (see `Using v3 Endpoints <#using-v3-endpoints>`__).
+    persist independently of any local agent. This is distinct from the local agent Endpoints
+    managed by :func:`~pyngrok.ngrok.connect` when ``config_version="3"`` (see `Using v3 Endpoints <#using-v3-endpoints>`__).
 
 The ``ngrok`` Process
 =====================
