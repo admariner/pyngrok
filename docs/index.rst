@@ -83,14 +83,13 @@ The :func:`~pyngrok.ngrok.connect` method takes ``kwargs`` as well, which allows
 additional tunnel configurations that are supported by ``ngrok`` (or the ``name`` of a tunnel defined in ``ngrok``'s
 config file), `as documented here <#tunnel-configurations>`__.
 
-Tunnels and Endpoints
----------------------
+.. note::
 
-``pyngrok`` unifies ``ngrok``'s "tunnel" (v2) and "endpoint" (v3) concepts behind a single API:
-:func:`~pyngrok.ngrok.connect` returns an :class:`~pyngrok.ngrok.NgrokTunnel` and handles the differences for
-you through the :attr:`~pyngrok.conf.PyngrokConfig.config_version` you set. All ``ngrok``
-features are available to you through this. For v3-specific Endpoints,
-see `Using v3 Endpoints <#using-v3-endpoints>`__.
+    ``pyngrok`` unifies ``ngrok``'s "tunnel" (v2) and "endpoint" (v3) concepts behind a single API:
+    :func:`~pyngrok.ngrok.connect` returns an :class:`~pyngrok.ngrok.NgrokTunnel` and handles the differences for
+    you through the :attr:`~pyngrok.conf.PyngrokConfig.config_version` you set. All ``ngrok``
+    features are available to you through this. For v3-specific Endpoints,
+    see `Using v3 Endpoints <#using-v3-endpoints>`__.
 
 Get Active Tunnels
 ------------------
