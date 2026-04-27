@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.0...HEAD)
+## [Unreleased](https://github.com/alexdlaird/pyngrok/compare/8.1.1...HEAD)
+
+## [8.1.1](https://github.com/alexdlaird/pyngrok/compare/8.1.0...8.1.1) - 2026-04-27
+
+### Fixed
+
+- Build and stability improvements.
 
 ## [8.1.0](https://github.com/alexdlaird/pyngrok/compare/8.0.0...8.1.0) - 2026-04-26
 
