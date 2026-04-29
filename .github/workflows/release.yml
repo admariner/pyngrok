@@ -55,9 +55,16 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
       - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           VERSION: ${{ needs.prereq.outputs.version }}
           SHA: ${{ needs.prereq.outputs.squash_commit_sha }}
           RELEASE_NOTES: ${{ needs.prereq.outputs.release_notes }}
