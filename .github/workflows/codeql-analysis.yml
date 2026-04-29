@@ -1,5 +1,7 @@
 name: "CodeQL"
 
+run-name: CodeQL ${{ github.ref_name }}
+
 on:
   push:
     branches: [ main ]
